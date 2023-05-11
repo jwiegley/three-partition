@@ -36,10 +36,7 @@ instance (SatModel v, Reifies s Int) => SatModel (Solution s v) where
         bs
       )
 
-isValid ::
-  [Int] ->
-  Solution s SWord32 ->
-  SBool
+isValid :: [Int] -> Solution s SWord32 -> SBool
 isValid i Solution {..} =
   assert
     ( length assignments == length i
