@@ -1,0 +1,27 @@
+Name:          three-partition
+Version:       1.0.0
+Synopsis:      A 3-partition problem solver
+Description:   A 3-partition problem solver
+Homepage:      http://github.com/jwiegley/three-partition
+License:       AllRightsReserved
+License-file:  LICENSE
+Author:        John Wiegley
+Maintainer:    jwiegley@gmail.com
+Copyright:     (C) 2023 John Wiegley
+Category:      Web
+Build-type:    Simple
+Cabal-version: >= 1.8
+
+Executable three-partition
+  Main-is:     Main.hs
+  Ghc-options: -Wall
+
+  Build-depends:
+      base         >= 4.6
+    , sbv
+    , cassava
+    , containers
+    , pretty-show
+    , reflection
+    , regex-posix
+    , time
