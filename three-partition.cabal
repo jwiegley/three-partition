@@ -19,9 +19,6 @@ Executable three-partition
   Build-depends:
       base         >= 4.6
     , sbv
-    , cassava
     , containers
     , pretty-show
     , reflection
-    , regex-posix
-    , time
