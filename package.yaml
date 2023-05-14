@@ -1,0 +1,22 @@
+name:       three-partition
+version:    1.0.0
+synopsis:   A 3-partition problem solver
+github:     jwiegley/three-partition
+author:     John Wiegley
+maintainer: johnw@newartisans.com
+category:   System
+license:    BSD3
+
+description:
+  A 3-partition problem solver
+
+dependencies:
+  - base         >= 4.6
+  - sbv
+  - containers
+  - pretty-show
+  - reflection
+
+executables:
+  three-partition:
+    main: Main.hs

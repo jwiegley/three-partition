@@ -1,24 +1,34 @@
-Name:          three-partition
-Version:       1.0.0
-Synopsis:      A 3-partition problem solver
-Description:   A 3-partition problem solver
-Homepage:      http://github.com/jwiegley/three-partition
-License:       AllRightsReserved
-License-file:  LICENSE
-Author:        John Wiegley
-Maintainer:    jwiegley@gmail.com
-Copyright:     (C) 2023 John Wiegley
-Category:      Web
-Build-type:    Simple
-Cabal-version: >= 1.8
+cabal-version: 1.12
 
-Executable three-partition
-  Main-is:     Main.hs
-  Ghc-options: -Wall
+-- This file has been generated from package.yaml by hpack version 0.35.2.
+--
+-- see: https://github.com/sol/hpack
 
-  Build-depends:
-      base         >= 4.6
-    , sbv
+name:           three-partition
+version:        1.0.0
+synopsis:       A 3-partition problem solver
+description:    A 3-partition problem solver
+category:       System
+homepage:       https://github.com/jwiegley/three-partition#readme
+bug-reports:    https://github.com/jwiegley/three-partition/issues
+author:         John Wiegley
+maintainer:     johnw@newartisans.com
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+
+source-repository head
+  type: git
+  location: https://github.com/jwiegley/three-partition
+
+executable three-partition
+  main-is: Main.hs
+  other-modules:
+      Paths_three_partition
+  build-depends:
+      base >=4.6
     , containers
     , pretty-show
     , reflection
+    , sbv
+  default-language: Haskell2010
