@@ -21,7 +21,8 @@
           three-partition =
             final.haskell-nix.project' {
               src = ./.;
-              compiler-nix-name = "ghc963";
+              supportHpack = true;
+              compiler-nix-name = "ghc982";
               shell.tools = {
                 cabal = {};
                 # haskell-language-server = {};

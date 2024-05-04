@@ -126,4 +126,4 @@ main = do
         ]
       l' = l ++ replicate ((3 - length l `rem` 3) `mod` 3) 0
   print l'
-  partition l'
+  Main.partition l'
