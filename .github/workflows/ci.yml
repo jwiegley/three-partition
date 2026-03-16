@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: cachix/install-nix-action@v27
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+            accept-flake-config = true
+
+      - uses: cachix/cachix-action@v15
+        with:
+          name: iohk
+          skipPush: true
+
+      - name: Nix flake check
+        run: nix flake check
+
+      - name: Build
+        run: nix build
+
+      - name: Test
+        run: nix develop -c cabal test --test-show-details=direct
+
+      - name: Lint
+        run: nix develop -c hlint src/ app/ test/ bench/
+
+      - name: Format
+        run: nix develop -c fourmolu --mode check src/ app/ test/ bench/
+
+      - name: Coverage report
+        run: |
+          nix develop -c cabal test --enable-coverage --test-show-details=direct
+          nix develop -c cabal test --enable-coverage 2>&1 | tee coverage.log
+        continue-on-error: true
+
+      - name: Benchmark
+        run: |
+          nix develop -c cabal bench --benchmark-options="--output=bench-report.html" || true
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: |
+            dist-newstyle/build/**/hpc/**
+            coverage.log
+
+      - name: Upload benchmark report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: benchmark-report
+          path: bench-report.html

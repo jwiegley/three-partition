@@ -1,0 +1,15 @@
+pre-commit:
+  parallel: true
+  commands:
+    fourmolu:
+      glob: "*.hs"
+      run: fourmolu --mode check {staged_files}
+    hlint:
+      glob: "*.hs"
+      run: hlint {staged_files}
+    nix-check:
+      glob: "*.{hs,nix,yaml,cabal}"
+      run: nix flake check --no-warn-dirty 2>&1
+    cabal-test:
+      glob: "*.{hs,yaml,cabal}"
+      run: cabal test --test-show-details=direct -j && scripts/check-coverage.sh && scripts/check-perf.sh
