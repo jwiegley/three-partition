@@ -1,22 +1,60 @@
-name:       three-partition
-version:    1.0.0
-synopsis:   A 3-partition problem solver
-github:     jwiegley/three-partition
-author:     John Wiegley
+name: three-partition
+version: 1.0.0
+synopsis: A 3-partition problem solver
+github: jwiegley/three-partition
+author: John Wiegley
 maintainer: johnw@newartisans.com
-category:   System
-license:    BSD3
+category: Math
+license: BSD3
 
 description:
-  A 3-partition problem solver
+  A solver for the 3-partition problem using SMT (SBV/Z3).
 
-dependencies:
-  - base         >= 4.6
-  - sbv
-  - containers
-  - pretty-show
-  - reflection
+ghc-options:
+  - -Wall
+
+library:
+  source-dirs: src
+  exposed-modules:
+    - ThreePartition
+  dependencies:
+    - base >= 4.6
+    - sbv
+    - reflection
 
 executables:
   three-partition:
     main: Main.hs
+    source-dirs: app
+    dependencies:
+      - base >= 4.6
+      - three-partition
+    ghc-options:
+      - -threaded
+      - -rtsopts
+
+tests:
+  three-partition-test:
+    main: Spec.hs
+    source-dirs: test
+    dependencies:
+      - base >= 4.6
+      - three-partition
+      - hspec
+      - QuickCheck
+    ghc-options:
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
+
+benchmarks:
+  three-partition-bench:
+    main: Main.hs
+    source-dirs: bench
+    dependencies:
+      - base >= 4.6
+      - three-partition
+      - criterion
+    ghc-options:
+      - -threaded
+      - -rtsopts

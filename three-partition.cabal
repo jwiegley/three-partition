@@ -7,28 +7,71 @@ cabal-version: 1.12
 name:           three-partition
 version:        1.0.0
 synopsis:       A 3-partition problem solver
-description:    A 3-partition problem solver
-category:       System
+description:    A solver for the 3-partition problem using SMT (SBV/Z3).
+category:       Math
 homepage:       https://github.com/jwiegley/three-partition#readme
 bug-reports:    https://github.com/jwiegley/three-partition/issues
 author:         John Wiegley
 maintainer:     johnw@newartisans.com
 license:        BSD3
-license-file:   LICENSE
+license-file:   LICENSE.md
 build-type:     Simple
 
 source-repository head
   type: git
   location: https://github.com/jwiegley/three-partition
 
+library
+  exposed-modules:
+      ThreePartition
+  other-modules:
+      Paths_three_partition
+  hs-source-dirs:
+      src
+  ghc-options: -Wall
+  build-depends:
+      base >=4.6
+    , reflection
+    , sbv
+  default-language: Haskell2010
+
 executable three-partition
   main-is: Main.hs
   other-modules:
       Paths_three_partition
+  hs-source-dirs:
+      app
+  ghc-options: -Wall -threaded -rtsopts
   build-depends:
       base >=4.6
-    , containers
-    , pretty-show
-    , reflection
-    , sbv
+    , three-partition
+  default-language: Haskell2010
+
+test-suite three-partition-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_three_partition
+  hs-source-dirs:
+      test
+  ghc-options: -Wall -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      QuickCheck
+    , base >=4.6
+    , hspec
+    , three-partition
+  default-language: Haskell2010
+
+benchmark three-partition-bench
+  type: exitcode-stdio-1.0
+  main-is: Main.hs
+  other-modules:
+      Paths_three_partition
+  hs-source-dirs:
+      bench
+  ghc-options: -Wall -threaded -rtsopts
+  build-depends:
+      base >=4.6
+    , criterion
+    , three-partition
   default-language: Haskell2010

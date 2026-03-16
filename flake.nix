@@ -1,6 +1,10 @@
 {
   description = "Solver for the 3-partition problem";
 
+  nixConfig = {
+    allow-import-from-derivation = true;
+  };
+
   inputs = {
     nixpkgs.follows = "haskellNix/nixpkgs-unstable";
     haskellNix.url = "github:input-output-hk/haskell.nix";
@@ -14,8 +18,7 @@
         inherit system overlays;
         inherit (haskellNix) config;
       };
-      flake = pkgs.three-partition.flake {
-      };
+
       overlays = [ haskellNix.overlay
         (final: prev: {
           three-partition =
@@ -23,29 +26,64 @@
               src = ./.;
               supportHpack = true;
               compiler-nix-name = "ghc910";
-              shell.tools = {
-                cabal = {};
-                haskell-language-server = {};
-                # hlint = {};
+
+              modules = [{
+                packages.three-partition = {
+                  ghcOptions = [ "-Werror" ];
+                };
+              }];
+
+              shell = {
+                tools = {
+                  cabal = {};
+                  haskell-language-server = {};
+                  hlint = {};
+                  fourmolu = {};
+                };
+                buildInputs = with pkgs; [
+                  pkg-config
+                  lefthook
+                  z3
+                ];
               };
-              shell.buildInputs = with pkgs; [
-                pkg-config
-              ];
             };
         })
       ];
+
+      project = pkgs.three-partition;
+      flake = project.flake {};
+
+      hsSources = [
+        "${self}/src/ThreePartition.hs"
+        "${self}/app/Main.hs"
+        "${self}/test/Spec.hs"
+        "${self}/bench/Main.hs"
+      ];
+      hsSourcesStr = builtins.concatStringsSep " " hsSources;
+
     in flake // {
-      packages.default = flake.packages."three-partition:exe:three-partition";
-
-      devShell = pkgs.haskellPackages.shellFor {
-        packages = p: [
-        ];
-
-        buildInputs = with pkgs.haskellPackages; [
-          cabal-install
-        ];
-
-        withHoogle = true;
+      packages = flake.packages // {
+        default = flake.packages."three-partition:exe:three-partition";
       };
+
+      checks = (flake.checks or {}) // {
+        build = flake.packages."three-partition:exe:three-partition";
+
+        format = pkgs.runCommand "format-check" {
+          nativeBuildInputs = [ pkgs.haskellPackages.fourmolu ];
+        } ''
+          fourmolu --config ${self}/fourmolu.yaml --mode check ${hsSourcesStr}
+          touch $out
+        '';
+
+        lint = pkgs.runCommand "lint-check" {
+          nativeBuildInputs = [ pkgs.haskellPackages.hlint ];
+        } ''
+          hlint ${hsSourcesStr}
+          touch $out
+        '';
+      };
+
+      devShells.default = project.shell;
     });
 }
