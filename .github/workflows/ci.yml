@@ -24,7 +24,11 @@ jobs:
           skipPush: true
 
       - name: Nix flake check
-        run: nix flake check
+        run: |
+          nix build --no-link \
+            .#checks.x86_64-linux.build \
+            .#checks.x86_64-linux.format \
+            .#checks.x86_64-linux.lint
 
       - name: Build
         run: nix build
